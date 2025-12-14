@@ -1,9 +1,6 @@
 pipeline {
   agent any
-
-  options {
-    timestamps()
-  }
+  options { timestamps() }
 
   stages {
     stage('Checkout') {
@@ -21,6 +18,11 @@ pipeline {
     stage('Test') {
       steps {
         sh 'npm test'
+      }
+      post {
+        always {
+          junit 'reports/junit.xml'
+        }
       }
     }
   }
