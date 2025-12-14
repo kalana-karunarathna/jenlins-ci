@@ -33,6 +33,7 @@ pipeline {
         always {
           junit 'reports/junit.xml'
           archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
+          cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml'
         }
       }
     }
