@@ -22,6 +22,7 @@ pipeline {
       post {
         always {
           junit 'reports/junit.xml'
+          archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
         }
       }
     }
