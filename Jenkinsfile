@@ -1,5 +1,9 @@
 pipeline {
   agent any
+  // Specify Node.js version configured in Jenkins
+  tools {
+    nodejs 'node20'
+  }
   options { timestamps() }
 
   stages {
