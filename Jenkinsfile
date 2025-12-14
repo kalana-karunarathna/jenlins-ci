@@ -18,6 +18,12 @@ pipeline {
         sh 'npm ci || npm install'
       }
     }
+    stage('Lint') {
+      steps {
+        sh 'npm run lint'
+      }
+   }
+
 
     stage('Test') {
       steps {
