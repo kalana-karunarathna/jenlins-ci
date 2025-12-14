@@ -1,43 +1,30 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:20'
-      args '-u root:root'
-    }
-  }
-  
+  agent any
   options { timestamps() }
 
   stages {
     stage('Checkout') {
-      steps {
-        checkout scm
-      }
+      steps { checkout scm }
     }
 
-    stage('Install') {
+    stage('CI in Docker (Node 20)') {
       steps {
-        sh 'npm ci || npm install'
+        bat '''
+          docker pull node:20
+          docker run --rm ^
+            -v "%CD%":/app ^
+            -w /app ^
+            node:20 ^
+            bash -lc "npm ci && npm run lint && npm test"
+        '''
       }
     }
-    stage('Lint') {
-      steps {
-        sh 'npm run lint'
-      }
-   }
+  }
 
-
-    stage('Test') {
-      steps {
-        sh 'npm test'
-      }
-      post {
-        always {
-          junit 'reports/junit.xml'
-          archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
-          
-        }
-      }
+  post {
+    always {
+      junit 'reports/junit.xml'
+      archiveArtifacts artifacts: 'reports/**,coverage/**', fingerprint: true
     }
   }
 }
