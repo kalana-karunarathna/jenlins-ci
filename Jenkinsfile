@@ -1,9 +1,11 @@
 pipeline {
-  agent any
-  // Specify Node.js version configured in Jenkins
-  tools {
-    nodejs 'node20'
+  agent {
+    docker {
+      image 'node:20'
+      args '-u root:root'
+    }
   }
+  
   options { timestamps() }
 
   stages {
@@ -33,7 +35,7 @@ pipeline {
         always {
           junit 'reports/junit.xml'
           archiveArtifacts artifacts: 'reports/junit.xml', fingerprint: true
-          cobertura coberturaReportFile: 'coverage/cobertura-coverage.xml'
+          
         }
       }
     }
